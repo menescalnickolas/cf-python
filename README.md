@@ -1,5 +1,5 @@
 # Python for Beginners
-In this repository you will find the folders from different exercises around Python programming. I will be uploading them as I finish each exercise. 
+In this repository you will find folders with different exercises around Python programming. I will be uploading them as I finish each exercise. 
 
 <br>
 
