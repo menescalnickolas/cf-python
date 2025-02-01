@@ -1,4 +1,4 @@
-# Python for Beginners
+# Python for Web Developers
 In this repository you will find folders with different exercises around Python programming. I will be uploading them as I finish each exercise. 
 
 <br>
