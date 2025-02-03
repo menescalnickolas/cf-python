@@ -1,0 +1,13 @@
+str3 = 'hello, how are you?'
+
+
+
+str3[3:]    ____ 'lo, how are you?'
+
+str3[-3:]   ____ 'ou?'
+
+str3[2:9:3] ____ 'l,o'
+
+str3[::-2]  ____ '?o r o olh'
+
+str3[2:8]   ____ 'llo, h'
