@@ -7,6 +7,7 @@ def take_recipe():
   cooking_time = int(input("Cooking time in minutes: "))
   ingredients = list(input("Ingredients: ").split(", "))
   recipe = {'name': name, 'cooking_time': cooking_time, 'ingredients': ingredients}
+  return recipe
 
 
 
