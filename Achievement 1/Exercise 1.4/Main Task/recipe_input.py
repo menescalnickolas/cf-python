@@ -61,7 +61,7 @@ for i in range(n):
 
   recipes_list.append(recipe)
 
-data = {"recipes_list": recipes_list, "all_ingredients": all_ingredients}
+data = {"recipes_list": recipes_list, "all_ingredients": ingredients_list}
 
 new_filename = open(file_name, "wb")
 pickle.dump(data, new_filename)
