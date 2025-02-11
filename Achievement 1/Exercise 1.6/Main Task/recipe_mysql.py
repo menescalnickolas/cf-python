@@ -57,7 +57,91 @@ def main_menu(conn, cursor):
     conn.close()
 
 def create_recipe():
-    name = input("Recipe name: ")
+    name = str(input("Recipe name: "))
+    cooking_time = int(input("Cooking time in minutes: "))
+    ingredients_input = list(str(input("Ingredients: ")))
+    ingredients = ingredients_input.split(", ")
+    difficulty = calculate_difficulty(cooking_time, ingredients)
+
+    ingredients_string = ", ".join(ingredients)
+
+    insert_query = "INSERT INTO Recipes (name, ingredients, cooking_time, difficulty) VALUES (%s, %s, %s, %s)"
+    cursor.execute(insert_query, (name, ingredients_string, cooking_time, difficulty))
+    conn.commit()
+
+    print("Recipe added succesfully!")
+
+
+def calculate_difficulty(cooking_time, ingredients):
+    ingredients = len(ingredients)
+    if cooking_time < 10 and ingredients < 4:
+        return "Easy"
+    elif cooking_time < 10 and ingredients >= 4:
+        return "Medium"
+    elif cooking_time >= 10 and ingredients < 4:
+        return "Intermediate"
+    elif cooking_time >= 10 and ingredients >= 4:
+        return "Hard"
+
+
+def search_recipe(conn, cursor):
+    cursor.execute("SELECT ingredients FROM Recipes")
+    results = cursor.fetchall()
+    
+    #Adds each ingredient into all_ingredients
+    all_ingredients = set()
+    for row in results: 
+        ingredients = row[0]
+        all_ingredients.update(ingredients.spit(", "))
+
+    #Display ingredients found so far to user and allow them to pick a number corresponding to the ingredient 
+    print("Ingredients available: ")
+    for i, ingredient in enumerate(sorted(all_ingredients), start=1):
+        print(f"{i}. {ingredient}")
+
+    #Allow user to pick a number corresponding to the ingredient in order to search for it
+    choice = int(input("Choose an ingredient by number: ")) - 1 #Added -1 because list starts at 1 instead of 0
+
+    #Stores ingredient searched into variable
+    search_ingredient = sorted(all_ingredients)[choice]
+
+    #To search for rows in the table that contain search_ingredient
+    search_query = "SELECT * FROM Recipes WHERE ingredients LIKE %s"
+    cursor.execute(search_query, ('%' + search_ingredient + '%',))
+
+    if results:
+        for row in results:
+            print(row)
+    
+    else: 
+        print("No recipes with this ingredient.")
+    
+
+def update_recipe(conn, cursor):
+    #Fetches all the recipes in the database with id and name
+    cursor.execute("SELECT id, name FROM Recipes")
+    recipes = cursor.fetchall()
+
+    #Show recipes to user 
+    print("Recipes available to update: ")
+    for row in recipes: 
+        print(f"ID: {row[0]}, Name: {row[1]}")
+
+    #Let user pick a recipe by id and choose what column to update
+    recipe_id = int(input("Enter recipe's ID to update: "))
+    column = str(input("What column would you like to update? (name, ingredients or cooking_time)"))
+
+    #Collecting the new value from the user
+    new_value = None
+
+    if column == "name":
+        new_value = str(input("Enter recipe's new name: "))
+        updated_query = "UPDATE Recipes SET name = %s WHERE id = %s"
+        cursor.execute(updated_query, (new_value, recipe_id))
+
+    elif column == "ingredients":
+        new_value = input("Enter new ingredients separated by comma: ")
+        
 
 
 
