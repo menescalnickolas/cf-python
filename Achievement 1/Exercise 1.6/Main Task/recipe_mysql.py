@@ -55,3 +55,14 @@ def main_menu(conn, cursor):
 
     conn.commit()
     conn.close()
+
+def create_recipe():
+    name = input("Recipe name: ")
+
+
+
+
+
+
+#Calling main_menu in the main code, passing conn and cursor so it can access the database
+main_menu(conn, cursor)
