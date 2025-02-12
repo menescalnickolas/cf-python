@@ -3,7 +3,7 @@ import mysql.connector
 conn = mysql.connector.connect(
   host ='localhost',
   user ='cf-python',
-  password ='password')
+  password ='axsydvfcgnhb1!')
 
 cursor = conn.cursor()
 
@@ -57,6 +57,7 @@ def main_menu(conn, cursor):
     conn.close()
 
 def create_recipe():
+    #Lets user insert values for new recipe
     name = str(input("Recipe name: "))
     cooking_time = int(input("Cooking time in minutes: "))
     ingredients_input = list(str(input("Ingredients: ")))
@@ -141,11 +142,44 @@ def update_recipe(conn, cursor):
 
     elif column == "ingredients":
         new_value = input("Enter new ingredients separated by comma: ")
-        
+        updated_query = "UPDATE Recipes SET ingredients = %s WHERE id = %s"
+        cursor.execute(updated_query, (new_value, recipe_id))
 
+    else: 
+        print("Unexpected error.")
+        return
+    
+    #Updating difficulty after user updated values
+    if column in ['ingredients', 'cooking_time']:
+        cursor.execute("SELECT cooking_time, ingredients FROM Recipes WHERE id = %s", (recipe_id,))
+        row = cursor.fetchone()
+        difficulty = calculate_difficulty(row[0], row[1])
+        updated_query = "UPDATE Recipes SET difficulty = %s WHERE id = %s"
+        cursor.execute(updated_query, (difficulty, recipe_id))
 
+    conn.commit()
+    print("Recipe updated!")
 
+def delete_recipe(conn, cursor):
+    cursor.execute("SELECT id, name FROM Recipes")
+    recipes = cursor.fetchall()
 
+    #Display every recipe in the table
+    print("Recipes available: ")
+    for row in recipes:
+        print(f"ID: {row[0]}, Name: {row[1]}")
+
+    #Lets user pick a recipe by id to delete
+    recipe_id = int(input("Pick a recipe by id to delete: "))
+
+    #Query with DELETE statement 
+    delete_query = "DELETE FROM Recipes WHERE id = %s"
+    cursor.execute(delete_query, (recipe_id,))
+
+    conn.commit()
+
+    print("Recipe deleted!")
+    
 
 
 #Calling main_menu in the main code, passing conn and cursor so it can access the database
