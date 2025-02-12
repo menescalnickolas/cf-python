@@ -13,10 +13,10 @@ cursor.execute("USE task_database")
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS Recipes(
                id INT PRIMARY KEY AUTO_INCREMENT,
-               name TEXT VARCHAR(50),
-               ingredients TEXT VARCHAR(255),
+               name VARCHAR(50),
+               ingredients VARCHAR(255),
                cooking_time INT, 
-               difficulty TEXT VARCHAR(20)
+               difficulty VARCHAR(20)
                )''')
 
 def main_menu(conn, cursor):
@@ -54,13 +54,12 @@ def main_menu(conn, cursor):
         print("Unexpected error! Pick an option or enter 'quit'.")
 
     conn.commit()
-    conn.close()
 
-def create_recipe():
+def create_recipe(conn, cursor):
     #Lets user insert values for new recipe
     name = str(input("Recipe name: "))
     cooking_time = int(input("Cooking time in minutes: "))
-    ingredients_input = list(str(input("Ingredients: ")))
+    ingredients_input = (input("Ingredients: "))
     ingredients = ingredients_input.split(", ")
     difficulty = calculate_difficulty(cooking_time, ingredients)
 
@@ -93,9 +92,10 @@ def search_recipe(conn, cursor):
     all_ingredients = set()
     for row in results: 
         ingredients = row[0]
-        all_ingredients.update(ingredients.spit(", "))
+        ingredients_list = [ingredient.lower().strip() for ingredient in ingredients.split(",")]
+        all_ingredients.update(ingredients_list)
 
-    #Display ingredients found so far to user and allow them to pick a number corresponding to the ingredient 
+    #Display unique ingredients found so far to user and allow them to pick a number corresponding to the ingredient 
     print("Ingredients available: ")
     for i, ingredient in enumerate(sorted(all_ingredients), start=1):
         print(f"{i}. {ingredient}")
@@ -109,9 +109,10 @@ def search_recipe(conn, cursor):
     #To search for rows in the table that contain search_ingredient
     search_query = "SELECT * FROM Recipes WHERE ingredients LIKE %s"
     cursor.execute(search_query, ('%' + search_ingredient + '%',))
+    search_results = cursor.fetchall()
 
-    if results:
-        for row in results:
+    if search_results:
+        for row in search_results:
             print(row)
     
     else: 
@@ -144,6 +145,11 @@ def update_recipe(conn, cursor):
         new_value = input("Enter new ingredients separated by comma: ")
         updated_query = "UPDATE Recipes SET ingredients = %s WHERE id = %s"
         cursor.execute(updated_query, (new_value, recipe_id))
+
+    elif column == 'cooking_time':
+        new_value = int(input("Enter the new cooking time (in minutes): "))
+        update_query = "UPDATE Recipes SET cooking_time = %s WHERE id = %s"
+        cursor.execute(update_query, (new_value, recipe_id))
 
     else: 
         print("Unexpected error.")
@@ -183,4 +189,8 @@ def delete_recipe(conn, cursor):
 
 
 #Calling main_menu in the main code, passing conn and cursor so it can access the database
-main_menu(conn, cursor)
+try:
+    main_menu(conn, cursor)
+finally:
+    cursor.close()
+    conn.close()
