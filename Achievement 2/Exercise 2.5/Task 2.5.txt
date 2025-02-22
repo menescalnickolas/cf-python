@@ -1,0 +1,7 @@
+1 - Mention your models/tables from Exercise 2.3, and specify if (and why) you’re changing any attributes.
+
+Answer: 
+
+Change the difficulty attribute to calculate the level. 
+Added attributes: Pic, recipe description and preparation method
+The other attributes will remain the same. (id, name, cooking time, ingredients)
