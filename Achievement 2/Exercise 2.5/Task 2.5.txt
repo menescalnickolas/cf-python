@@ -1,7 +1,6 @@
 1 - Mention your models/tables from Exercise 2.3, and specify if (and why) you’re changing any attributes.
 
-Answer: 
-
-Change the difficulty attribute to calculate the level. 
-Added attributes: Pic, recipe description and preparation method
-The other attributes will remain the same. (id, name, cooking time, ingredients)
+Answer: I only have one model (Recipes) with the following attributes: recipe_id, name, cooking_time, ingredients, difficulty. I will be adding the "pic" attribute so users
+can add a picture to their recipe details. I will also be adding a recipe description field and a preparation method field so users can write more information on how to prepare
+the recipes and maybe some history or background of the dish. Lastly, I will change the difficulty attribute so it correctly calulates the recipe's level based on the information 
+inputed by the user. (I will be using the @property method for difficulty so it is updated dynamically.)
